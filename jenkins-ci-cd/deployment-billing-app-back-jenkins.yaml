@@ -1,0 +1,36 @@
+apiVersion: apps/v1 # Especifica la versión de la API de Kubernetes que se usa
+kind: Deployment # Define el tipo de recurso como un Deployment
+metadata:
+  name: demo-app-back-deployment-jenkis # Asigna un nombre al Deployment
+spec:
+  selector:
+    matchLabels:
+      app: demo-app-back-jenkis # Selecciona los pods que tengan esta etiqueta
+  replicas: 2 # Define el número de réplicas o copias del pod que se despliegan
+  template:
+    metadata:
+      labels:
+        app: demo-app-back-jenkis # Asigna una etiqueta al pod
+    spec:
+      containers:
+        - name: demo-app-back-jenkis # Asigna un nombre al contenedor dentro del pod
+          image: miltonlq/demoapp # Especifica la imagen del contenedor que se usa
+          ports:
+            - containerPort: 7280 # Define el puerto que expone el contenedor
+              name: demoappbport # Asigna un nombre al puerto
+---
+kind: Service # Define el tipo de recurso como un Service
+apiVersion: v1 # Especifica la versión de la API de Kubernetes que se usa
+metadata:
+  name: demo-app-back-service-jenkis # Asigna un nombre al Service
+  labels:
+    app: demo-app-back-jenkis # Asigna una etiqueta al Service
+spec:
+  ports:
+    - name: demo-app-back-jenkis # Asigna un nombre al puerto del Service
+      port: 7280 # Define el puerto que expone el Service
+      nodePort: 31780 # Define el puerto que expone el nodo donde se ejecuta el Service
+  #type: LoadBalancer # Comenta esta línea si quieres usar el tipo NodePort en lugar de LoadBalancer
+  type: NodePort # Define el tipo de Service como NodePort, que permite acceder al Service desde fuera del clúster usando el puerto del nodo
+  selector:
+    app: demo-app-back-jenkis # Selecciona los pods que tengan esta etiqueta para asociarlos al Service

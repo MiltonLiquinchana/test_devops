@@ -1,0 +1,12 @@
+pipeline{
+    agent{
+        label "flower-app"
+    }
+    stages{
+        stage("Stage 1"){
+            steps{
+                echo "========executing A========"
+            }
+        }
+    }
+}
