@@ -4,7 +4,7 @@ pipeline{
     }
 
     stages{
-        stage("Build flower app back"){
+        stage("Build_flower_app_back"){
             steps{
                 echo "Revisando con sonarqube"
             }
@@ -66,7 +66,7 @@ pipeline{
             }
         }
 
-        stage("Build flower app front"){
+        stage("Build_flower_app_front"){
             steps{
                 echo "Revisando con sonarqube"
             }
