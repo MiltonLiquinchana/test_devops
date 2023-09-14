@@ -2,10 +2,129 @@ pipeline{
     agent{
         label "flower-app"
     }
+
     stages{
-        stage("Stage 1"){
+        stage("Build flower app back"){
             steps{
-                echo "========executing A========"
+                echo "Revisando con sonarqube"
+            }
+            post{
+                success{
+                    echo "informando con slack error o exito"
+                }
+                failure{
+                    echo "informando con slack error o exito"
+                }
+            }
+
+            steps{
+                echo "Construyendo jar del backend"
+            }
+            post{
+                success{
+                    echo "informando con slack error o exito"
+                }
+                failure{
+                    echo "informando con slack error o exito"
+                }
+            }
+
+            steps{
+                echo "construyendo imagen docker"
+            }
+            post{
+                success{
+                    echo "informando con slack error o exito"
+                }
+                failure{
+                    echo "informando con slack error o exito"
+                }
+            }
+
+            steps{
+                echo "subiendo a docker hub"
+            }
+            post{
+                success{
+                    echo "informando con slack error o exito"
+                }
+                failure{
+                    echo "informando con slack error o exito"
+                }
+            }
+            
+            steps{
+                echo "deploy en kubernetes"
+            }
+            post{
+                success{
+                    echo "informando con slack error o exito"
+                }
+                failure{
+                    echo "informando con slack error o exito"
+                }
+            }
+        }
+
+        stage("Build flower app front"){
+            steps{
+                echo "Revisando con sonarqube"
+            }
+            post{
+                success{
+                    echo "informando con slack error o exito"
+                }
+                failure{
+                    echo "informando con slack error o exito"
+                }
+            }
+
+            steps{
+                echo "Construyendo con nodejs"
+            }
+            post{
+                success{
+                    echo "informando con slack error o exito"
+                }
+                failure{
+                    echo "informando con slack error o exito"
+                }
+            }
+
+            steps{
+                echo "construyendo imagen docker"
+            }
+            post{
+                success{
+                    echo "informando con slack error o exito"
+                }
+                failure{
+                    echo "informando con slack error o exito"
+                }
+            }
+
+            steps{
+                echo "subiendo a docker hub"
+            }
+            post{
+                success{
+                    echo "informando con slack error o exito"
+                }
+                failure{
+                    echo "informando con slack error o exito"
+                }
+            }
+
+            steps{
+                echo "deploy en kubernetes"
+            }
+            post{
+                success{
+                    echo "informando con slack error o exito"
+                }
+                failure{
+                    echo "informando con slack error o exito"
+                }
             }
         }
     }
