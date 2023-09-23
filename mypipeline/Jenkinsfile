@@ -11,8 +11,9 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    withSonarQubeEnv('sonarqubeserver', envOnly: true) {
-                        echo env.SONAR_HOST_URL
+                    def scannerHome = tool 'SonarQubeClient';
+                    withSonarQubeEnv('SonarQubeServer'){
+                        sh(script: "${scannerHome}/bin/sonar-scanner")
                     }
                 }
             }
