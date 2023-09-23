@@ -1,13 +1,13 @@
 
 pipeline {
     agent{
-        label "flower-app"
+        label "any"
     }
-    environment {
-        DOCKER_HUB_REPO = 'tu_usuario/tu_proyecto'  // Reemplaza con tu usuario y nombre de proyecto en Docker Hub
-        DOCKER_IMAGE_NAME = "${DOCKER_HUB_REPO}:${BUILD_NUMBER}"
-        SLACK_CHANNEL = '#nombre_del_canal'  // Reemplaza con el nombre de tu canal de Slack
-    }
+    // environment {
+    //     DOCKER_HUB_REPO = 'tu_usuario/tu_proyecto'  // Reemplaza con tu usuario y nombre de proyecto en Docker Hub
+    //     DOCKER_IMAGE_NAME = "${DOCKER_HUB_REPO}:${BUILD_NUMBER}"
+    //     SLACK_CHANNEL = '#nombre_del_canal'  // Reemplaza con el nombre de tu canal de Slack
+    // }
 
     stages {
 
@@ -17,13 +17,13 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis 1') {
+        stage('SonarQube Analysis') {
                 // Proporcionamos un  withSonarQubeEnv bloque que le permite seleccionar
                 // el servidor SonarQube con el que desea interactuar.
                 // Los detalles de conexión que haya configurado en la configuración global de
                 // Jenkins
                 // se pasarán automáticamente al escáner
-                withSonarQubeEnv('My SonarQube Server', envOnly: true) {
+                withSonarQubeEnv('sonarqubeserver', envOnly: true) {
                 // This expands the evironment variables SONAR_CONFIG_NAME, SONAR_HOST_URL, SONAR_AUTH_TOKEN that can be used by any script.
                 println ${env.SONAR_HOST_URL} 
             }
@@ -39,53 +39,53 @@ pipeline {
             }
         }
 
-        stage('Build Spring Boot') {
-            steps {
-                sh './gradlew build'
-            }
-        }
+    //     stage('Build Spring Boot') {
+    //         steps {
+    //             sh './gradlew build'
+    //         }
+    //     }
 
-        stage('Test Spring Boot') {
-            steps {
-                sh './gradlew test'
-            }
-        }
+    //     stage('Test Spring Boot') {
+    //         steps {
+    //             sh './gradlew test'
+    //         }
+    //     }
 
-        stage('Build React App') {
-            steps {
-                sh 'cd tu_proyecto_react && npm install && npm run build'  // Ajusta la ruta de tu proyecto React
-            }
-        }
+    //     stage('Build React App') {
+    //         steps {
+    //             sh 'cd tu_proyecto_react && npm install && npm run build'  // Ajusta la ruta de tu proyecto React
+    //         }
+    //     }
 
-        stage('Package and Push to Docker Hub') {
-            steps {
-                script {
-                    // docker.build(DOCKER_IMAGE_NAME, '.')
-                    // docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-                    //     docker.image(DOCKER_IMAGE_NAME).push()
-                    // }
-                }
-            }
-        }
+    //     stage('Package and Push to Docker Hub') {
+    //         steps {
+    //             script {
+    //                 // docker.build(DOCKER_IMAGE_NAME, '.')
+    //                 // docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+    //                 //     docker.image(DOCKER_IMAGE_NAME).push()
+    //                 // }
+    //             }
+    //         }
+    //     }
 
-        stage('Deploy') {
-            when {
-                branch 'master'
-            }
-            steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    // Coloca aquí tus comandos de despliegue
-                }
-            }
-        }
-    }
+    //     stage('Deploy') {
+    //         when {
+    //             branch 'master'
+    //         }
+    //         steps {
+    //             catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+    //                 // Coloca aquí tus comandos de despliegue
+    //             }
+    //         }
+    //     }
+    // }
     
-    post {
-        success {
-            slackSend(channel: SLACK_CHANNEL, color: 'good', message: "¡Despliegue exitoso en ${currentBuild.fullDisplayName}")
-        }
-        failure {
-            slackSend(channel: SLACK_CHANNEL, color: 'danger', message: "¡Despliegue fallido en la etapa de implementación en ${currentBuild.fullDisplayName}\nRevisar logs y detalles de fallo.")
-        }
+    // post {
+    //     success {
+    //         slackSend(channel: SLACK_CHANNEL, color: 'good', message: "¡Despliegue exitoso en ${currentBuild.fullDisplayName}")
+    //     }
+    //     failure {
+    //         slackSend(channel: SLACK_CHANNEL, color: 'danger', message: "¡Despliegue fallido en la etapa de implementación en ${currentBuild.fullDisplayName}\nRevisar logs y detalles de fallo.")
+    //     }
     }
 }
