@@ -1,131 +1,91 @@
-pipeline{
+
+pipeline {
     agent{
         label "flower-app"
     }
+    environment {
+        DOCKER_HUB_REPO = 'tu_usuario/tu_proyecto'  // Reemplaza con tu usuario y nombre de proyecto en Docker Hub
+        DOCKER_IMAGE_NAME = "${DOCKER_HUB_REPO}:${BUILD_NUMBER}"
+        SLACK_CHANNEL = '#nombre_del_canal'  // Reemplaza con el nombre de tu canal de Slack
+    }
 
-    stages{
-        stage("Build_flower_app_back"){
-            steps{
-                echo "Revisando con sonarqube"
-            }
-            post{
-                success{
-                    echo "informando con slack error o exito"
-                }
-                failure{
-                    echo "informando con slack error o exito"
-                }
-            }
+    stages {
 
-            steps{
-                echo "Construyendo jar del backend"
+        stage('Checkout') {
+            steps {
+                checkout scm
             }
-            post{
-                success{
-                    echo "informando con slack error o exito"
-                }
-                failure{
-                    echo "informando con slack error o exito"
-                }
-            }
+        }
 
-            steps{
-                echo "construyendo imagen docker"
+        stage('SonarQube Analysis 1') {
+                // Proporcionamos un  withSonarQubeEnv bloque que le permite seleccionar
+                // el servidor SonarQube con el que desea interactuar.
+                // Los detalles de conexión que haya configurado en la configuración global de
+                // Jenkins
+                // se pasarán automáticamente al escáner
+                withSonarQubeEnv('My SonarQube Server', envOnly: true) {
+                // This expands the evironment variables SONAR_CONFIG_NAME, SONAR_HOST_URL, SONAR_AUTH_TOKEN that can be used by any script.
+                println ${env.SONAR_HOST_URL} 
             }
-            post{
-                success{
-                    echo "informando con slack error o exito"
-                }
-                failure{
-                    echo "informando con slack error o exito"
-                }
-            }
+        }
 
-            steps{
-                echo "subiendo a docker hub"
-            }
-            post{
-                success{
-                    echo "informando con slack error o exito"
-                }
-                failure{
-                    echo "informando con slack error o exito"
-                }
-            }
-            
-            steps{
-                echo "deploy en kubernetes"
-            }
-            post{
-                success{
-                    echo "informando con slack error o exito"
-                }
-                failure{
-                    echo "informando con slack error o exito"
+        // No need to occupy a node
+        stage("Quality Gate 1"){
+        timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, pipeline will be killed after a timeout
+            def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
+                if (qg.status != 'OK') {
+                    error "Pipeline aborted due to quality gate failure: ${qg.status}"
                 }
             }
         }
 
-        stage("Build_flower_app_front"){
-            steps{
-                echo "Revisando con sonarqube"
+        stage('Build Spring Boot') {
+            steps {
+                sh './gradlew build'
             }
-            post{
-                success{
-                    echo "informando con slack error o exito"
-                }
-                failure{
-                    echo "informando con slack error o exito"
-                }
-            }
+        }
 
-            steps{
-                echo "Construyendo con nodejs"
+        stage('Test Spring Boot') {
+            steps {
+                sh './gradlew test'
             }
-            post{
-                success{
-                    echo "informando con slack error o exito"
-                }
-                failure{
-                    echo "informando con slack error o exito"
-                }
-            }
+        }
 
-            steps{
-                echo "construyendo imagen docker"
+        stage('Build React App') {
+            steps {
+                sh 'cd tu_proyecto_react && npm install && npm run build'  // Ajusta la ruta de tu proyecto React
             }
-            post{
-                success{
-                    echo "informando con slack error o exito"
-                }
-                failure{
-                    echo "informando con slack error o exito"
-                }
-            }
+        }
 
-            steps{
-                echo "subiendo a docker hub"
-            }
-            post{
-                success{
-                    echo "informando con slack error o exito"
-                }
-                failure{
-                    echo "informando con slack error o exito"
+        stage('Package and Push to Docker Hub') {
+            steps {
+                script {
+                    // docker.build(DOCKER_IMAGE_NAME, '.')
+                    // docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+                    //     docker.image(DOCKER_IMAGE_NAME).push()
+                    // }
                 }
             }
+        }
 
-            steps{
-                echo "deploy en kubernetes"
+        stage('Deploy') {
+            when {
+                branch 'master'
             }
-            post{
-                success{
-                    echo "informando con slack error o exito"
-                }
-                failure{
-                    echo "informando con slack error o exito"
+            steps {
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    // Coloca aquí tus comandos de despliegue
                 }
             }
+        }
+    }
+    
+    post {
+        success {
+            slackSend(channel: SLACK_CHANNEL, color: 'good', message: "¡Despliegue exitoso en ${currentBuild.fullDisplayName}")
+        }
+        failure {
+            slackSend(channel: SLACK_CHANNEL, color: 'danger', message: "¡Despliegue fallido en la etapa de implementación en ${currentBuild.fullDisplayName}\nRevisar logs y detalles de fallo.")
         }
     }
 }
