@@ -1,9 +1,7 @@
-
 pipeline {
     agent any
 
     stages {
-
         stage('Checkout') {
             steps {
                 checkout scm
@@ -11,31 +9,26 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-                // Proporcionamos un  withSonarQubeEnv bloque que le permite seleccionar
-                // el servidor SonarQube con el que desea interactuar.
-                // Los detalles de conexión que haya configurado en la configuración global de
-                // Jenkins
-                // se pasarán automáticamente al escáner
-                script{
-                    withSonarQubeEnv('sonarqubeserver', envOnly: true) {
-                    // This expands the evironment variables SONAR_CONFIG_NAME, SONAR_HOST_URL, SONAR_AUTH_TOKEN that can be used by any script.
-                    println ${env.SONAR_HOST_URL} 
-                }
-                
-            }
-        }
-
-        // No need to occupy a node
-        stage("Quality Gate"){
-        timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, pipeline will be killed after a timeout
+            steps {
                 script {
-                    def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
-                    if (qg.status != 'OK') {
-                        error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                    withSonarQubeEnv('sonarqubeserver', envOnly: true) {
+                        echo env.SONAR_HOST_URL
                     }
                 }
             }
-            
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    script {
+                        def qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                        }
+                    }
+                }
+            }
         }
     }
 }
