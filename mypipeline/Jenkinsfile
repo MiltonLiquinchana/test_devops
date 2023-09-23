@@ -1,13 +1,6 @@
 
 pipeline {
-    agent{
-        label "any"
-    }
-    // environment {
-    //     DOCKER_HUB_REPO = 'tu_usuario/tu_proyecto'  // Reemplaza con tu usuario y nombre de proyecto en Docker Hub
-    //     DOCKER_IMAGE_NAME = "${DOCKER_HUB_REPO}:${BUILD_NUMBER}"
-    //     SLACK_CHANNEL = '#nombre_del_canal'  // Reemplaza con el nombre de tu canal de Slack
-    // }
+    agent any
 
     stages {
 
@@ -30,7 +23,7 @@ pipeline {
         }
 
         // No need to occupy a node
-        stage("Quality Gate 1"){
+        stage("Quality Gate"){
         timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, pipeline will be killed after a timeout
             def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
                 if (qg.status != 'OK') {
@@ -39,53 +32,5 @@ pipeline {
             }
         }
 
-    //     stage('Build Spring Boot') {
-    //         steps {
-    //             sh './gradlew build'
-    //         }
-    //     }
-
-    //     stage('Test Spring Boot') {
-    //         steps {
-    //             sh './gradlew test'
-    //         }
-    //     }
-
-    //     stage('Build React App') {
-    //         steps {
-    //             sh 'cd tu_proyecto_react && npm install && npm run build'  // Ajusta la ruta de tu proyecto React
-    //         }
-    //     }
-
-    //     stage('Package and Push to Docker Hub') {
-    //         steps {
-    //             script {
-    //                 // docker.build(DOCKER_IMAGE_NAME, '.')
-    //                 // docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-    //                 //     docker.image(DOCKER_IMAGE_NAME).push()
-    //                 // }
-    //             }
-    //         }
-    //     }
-
-    //     stage('Deploy') {
-    //         when {
-    //             branch 'master'
-    //         }
-    //         steps {
-    //             catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-    //                 // Coloca aquí tus comandos de despliegue
-    //             }
-    //         }
-    //     }
-    // }
-    
-    // post {
-    //     success {
-    //         slackSend(channel: SLACK_CHANNEL, color: 'good', message: "¡Despliegue exitoso en ${currentBuild.fullDisplayName}")
-    //     }
-    //     failure {
-    //         slackSend(channel: SLACK_CHANNEL, color: 'danger', message: "¡Despliegue fallido en la etapa de implementación en ${currentBuild.fullDisplayName}\nRevisar logs y detalles de fallo.")
-    //     }
     }
 }
