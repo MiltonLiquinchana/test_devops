@@ -1,0 +1,8 @@
+para poder analizar el codigo de un proyecto maven, gradle etc,
+se tiene que tener el sonar-project.properties en la ruta raiz del repositorio(del
+proyecto), con eso si el proyecto es un proyecto maven se debe ejecutar el comando de
+compilacion, o de install para que se cree los archivos binarios, del proyecto ejemplo mvn
+clean install, o mvn -f project/pom.xml clean install(con -f especificamos la ruta del
+pom.xml) con esto ya podemos ejecutar el otro comando que es el que lanza el analizis con
+sonarqube
+
