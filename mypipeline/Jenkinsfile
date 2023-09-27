@@ -13,7 +13,7 @@ pipeline {
                 script {
                     // def scannerHome = tool 'SonarQubeClient';
                     withSonarQubeEnv('sonarqubeserver') { // If you have configured more than one global server connection, you can specify its name
-                        sh "sonarqubeserver"
+                        sh "./mvnw clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar"
                     }
                 }
             }
