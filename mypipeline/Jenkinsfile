@@ -11,25 +11,13 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    // def scannerHome = tool 'SonarQubeClient';
+                    def scannerHome = tool 'SonarQubeClient';
                     withSonarQubeEnv('sonarqubeserver') { // If you have configured more than one global server connection, you can specify its name
-                        sh "./demo/mvn clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar"
+                        sh "${scannerHome}/bin/sonar-scanner"
                     }
                 }
             }
         }
 
-        // stage('Quality Gate') {
-        //     steps {
-        //         timeout(time: 1, unit: 'HOURS') {
-        //             script {
-        //                 def qg = waitForQualityGate()
-        //                 if (qg.status != 'OK') {
-        //                     error "Pipeline aborted due to quality gate failure: ${qg.status}"
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
     }
 }
