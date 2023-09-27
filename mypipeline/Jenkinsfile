@@ -16,9 +16,10 @@ pipeline {
                     //recuperar la ruta del valor dado(SonarQubeClient)
                     def scannerHome = tool 'SonarQubeClient';
                     withSonarQubeEnv('sonarqubeserver') { // If you have configured more than one global server connection, you can specify its name
-                        sh(script: 'mvn -f demo/pom.xml org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar') 
+                        // sh(script: 'mvn -f demo/pom.xml org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar') 
                         // sh(script: 'mvn -f demo/pom.xml clean install')
                         // sh(script: '${scannerHome}/bin/sonar-scanner')
+                        sh(script: 'mvn -f demo/pom.xml sonar:sonar')
                     }
                 }
             }
