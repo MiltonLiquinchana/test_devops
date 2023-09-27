@@ -1,3 +1,6 @@
+#Este archivo siempre se debe crear por que al ejecutar el pipeline para un analisis
+#necesitara de esta informacion para contruir el proyecto en sonarqube server, recuerda
+#este archivo siempre debe estar en la carpeta raiz del proyecto
 # must be unique in a given SonarQube instance
 sonar.projectKey=demo-back-app
 
