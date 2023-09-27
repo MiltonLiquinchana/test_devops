@@ -13,6 +13,7 @@ pipeline {
                 script {
                     def scannerHome = tool 'SonarQubeClient';
                     withSonarQubeEnv('sonarqubeserver') { // If you have configured more than one global server connection, you can specify its name
+                        sh "demo/mvn clean install"
                         sh "${scannerHome}/bin/sonar-scanner"
                     }
                 }
