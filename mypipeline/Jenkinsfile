@@ -1,3 +1,19 @@
+// definimos una funcion la cual notifica mediante slack a los desarrolladores involucrados en el proyecto
+def sendSlackNotifcation(){
+    def description_error=''
+    def color='good';
+    def status='*SUCCES*'
+
+        if (currentBuild.currentResult == 'FAILURE' ) {
+            description_error="Error description: *${CI_ERROR}*"
+            color='danger'
+            status='*FAILURE*'
+        }
+
+    buildSummary = "Job: ${env.JOB_NAME}\n Status: ${status}\n ${description_error} \nBuild Report :${env.BUILD_URL}console"
+    slackSend (color : color, message: "${buildSummary}", channel: 'jenkinstestflower')
+}
+
 pipeline {
     agent any
 
@@ -10,21 +26,22 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                script {
-                    //defino una variable para que obtener la ruta de sonarscanner que se installo
-                    //en global configuration, tool solo es un acronimo que se utiliza para
-                    //recuperar la ruta del valor dado(SonarQubeClient)
-                    // def scannerHome = tool 'SonarQubeClient';
-                    withSonarQubeEnv('sonarqubeserver') { // If you have configured more than one global server connection, you can specify its name
-                        // sh(script: 'mvn -f demo/pom.xml org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar') 
-                        /* sh(script: 'mvn -f demo/pom.xml clean install')
-                           sh(script: '${scannerHome}/bin/sonar-scanner')*/
-                    //Todos los comandos anteriores funcian, por esta ves usaremos este,
-                    //ya que no necesita del sonar-project.properties file para funcionar,
-                    //en el caso de ejecutar el comando anterior a este en ese caso si es necesario
-                        sh(script: 'mvn -f demo/pom.xml clean install sonar:sonar')
-                    }
-                }
+                // script {
+                //     //defino una variable para que obtener la ruta de sonarscanner que se installo
+                //     //en global configuration, tool solo es un acronimo que se utiliza para
+                //     //recuperar la ruta del valor dado(SonarQubeClient)
+                //     // def scannerHome = tool 'SonarQubeClient';
+                //     withSonarQubeEnv('sonarqubeserver') { // If you have configured more than one global server connection, you can specify its name
+                //         // sh(script: 'mvn -f demo/pom.xml org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar') 
+                //         /* sh(script: 'mvn -f demo/pom.xml clean install')
+                //         sh(script: '${scannerHome}/bin/sonar-scanner')*/
+                //     //Todos los comandos anteriores funcian, por esta ves usaremos este,
+                //     //ya que no necesita del sonar-project.properties file para funcionar,
+                //     //en el caso de ejecutar el comando anterior a este en ese caso si es necesario
+                //         sh(script: 'mvn -f demo/pom.xml clean install sonar:sonar')
+                //     }
+                // }
+                echo 'hola mundo'
             }
         }
         stage("Quality Gate") {
@@ -33,6 +50,11 @@ pipeline {
                     waitForQualityGate(abortPipeline: true, webhookSecretId: 'web_Hook_Sonar_Secret')
                 }
             }
+        }
+    }
+    post{
+        always{
+            sendSlackNotifcation()
         }
 
     }
