@@ -1,21 +1,5 @@
-// definimos una funcion la cual notifica mediante slack a los desarrolladores involucrados en el proyecto
-def sendSlackNotifcation(){
-    def description_error=''
-    def color='good';
-    def status='*SUCCES*'
 
-        if (currentBuild.currentResult == 'FAILURE' ) {
-            description_error="Error description: *${CI_ERROR}*"
-            color='danger'
-            status='*FAILURE*'
-        }
-
-    buildSummary = "Job: ${env.JOB_NAME}\n Status: ${status}\n ${description_error} \nBuild Report :${env.BUILD_URL}console"
-    slackSend (color : color, message: "${buildSummary}", channel: 'jenkinstestflower')
-}
-
-pipeline {
-    agent any
+node(label: 'any') {
 
     stages {
         stage('Checkout') {
@@ -26,7 +10,6 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                script {
                     //defino una variable para que obtener la ruta de sonarscanner que se installo
                     //en global configuration, tool solo es un acronimo que se utiliza para
                     //recuperar la ruta del valor dado(SonarQubeClient)
@@ -41,7 +24,6 @@ pipeline {
                         sh(script: 'mvn -f demo/pom.xml clean install sonar:sonar')
                     }
                 }
-            }
         }
         stage("Quality Gate") {
             steps {
@@ -50,9 +32,33 @@ pipeline {
                 }
             }
         }
+        // stage("Build image docker"){
+        //     steps{
+        //         docker.withRegistry('https://index.docker.io/v1/','DockerHub-access-credentials'){
+        //             def customImage = docker.build('miltonlq/billingfront:latest', '--no-cache --build-arg angularfiles=dist/billingApp -f Devops/images/frontend/Dockerfile ./')
+        //             customImage.push()
+        //         }
+        //     }
+        // }
     }
     post{
         always{
+            // definimos una funcion la cual notifica mediante slack a los desarrolladores involucrados en el proyecto
+            def sendSlackNotifcation(){
+                def description_error=''
+                def color='good';
+                def status='*SUCCES*'
+
+                    if (currentBuild.currentResult == 'FAILURE' ) {
+                        description_error="Error description: *${CI_ERROR}*"
+                        color='danger'
+                        status='*FAILURE*'
+                    }
+
+                buildSummary = "Job: ${env.JOB_NAME}\n Status: ${status}\n ${description_error} \nBuild Report :${env.BUILD_URL}console"
+                slackSend (color : color, message: "${buildSummary}", channel: 'jenkinstestflower')
+            }
+
             sendSlackNotifcation()
         }
 
