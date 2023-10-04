@@ -45,28 +45,24 @@ node(label: 'any') {
     post{
         always{
             script{
-                // definimos una funcion la cual notifica mediante slack a los desarrolladores involucrados en el proyecto
-                def sendSlackNotifcation(){
-                    def description_error=''
-                    def color='good';
-                    def status='*SUCCES*'
-
-                        if (currentBuild.currentResult == 'FAILURE' ) {
-                            description_error="Error description: *${CI_ERROR}*"
-                            color='danger'
-                            status='*FAILURE*'
-                        }
-
-                    buildSummary = "Job: ${env.JOB_NAME}\n Status: ${status}\n ${description_error} \nBuild Report :${env.BUILD_URL}console"
-                    slackSend (color : color, message: "${buildSummary}", channel: 'jenkinstestflower')
-                }
-
-            sendSlackNotifcation()
-
+                sendSlackNotifcation()
             }
-            
+        }
+    }
+}
 
+// definimos una funcion la cual notifica mediante slack a los desarrolladores involucrados en el proyecto
+def sendSlackNotifcation(){
+    def description_error=''
+    def color='good';
+    def status='*SUCCES*'
+
+        if (currentBuild.currentResult == 'FAILURE' ) {
+            description_error="Error description: *${CI_ERROR}*"
+            color='danger'
+            status='*FAILURE*'
         }
 
-    }
+    buildSummary = "Job: ${env.JOB_NAME}\n Status: ${status}\n ${description_error} \nBuild Report :${env.BUILD_URL}console"
+    slackSend (color : color, message: "${buildSummary}", channel: 'jenkinstestflower')
 }
