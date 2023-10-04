@@ -1,7 +1,5 @@
 
 node {
-
-    stages {
         
         stage('Checkout') {
             steps {
@@ -41,12 +39,12 @@ node {
         //         }
         //     }
         // }
-    }
-    post{
-        always{
-            script{
-                sendSlackNotifcation()
-            }
+}
+
+post{
+    always{
+        script{
+            sendSlackNotifcation()
         }
     }
 }
