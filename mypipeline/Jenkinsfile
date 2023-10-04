@@ -45,9 +45,9 @@ node {
         currentBuild.result = 'FAILURE'
 
     }finally{
-
+        echo "Llegó al bloque finally"
         sendSlackNotifcation()
-        
+
     }
 }
 
