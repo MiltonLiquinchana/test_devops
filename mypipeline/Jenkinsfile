@@ -22,7 +22,7 @@ node {
         }
         stage("Quality Gate") {
             timeout(time: 1, unit: 'MINUTES') {
-                waitForQualityGate(abortPipeline: true, webhookSecretId: 'web_Hook_Sonar_Secret')
+                waitForQualityGate(abortPipeline: true, webhookSecretId: 'web_Hook_Sonar_Secrets')
             }
         }
         // stage("Build image docker"){
