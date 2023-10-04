@@ -6,7 +6,6 @@ node {
         }
 
         stage('SonarQube Analysis') {
-            steps {
                     //defino una variable para que obtener la ruta de sonarscanner que se installo
                     //en global configuration, tool solo es un acronimo que se utiliza para
                     //recuperar la ruta del valor dado(SonarQubeClient)
@@ -20,7 +19,6 @@ node {
                     //en el caso de ejecutar el comando anterior a este en ese caso si es necesario
                         sh(script: 'mvn -f demo/pom.xml clean install sonar:sonar')
                     }
-                }
         }
         stage("Quality Gate") {
             steps {
