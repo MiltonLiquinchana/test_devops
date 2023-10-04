@@ -13,6 +13,7 @@ def sendSlackNotifcation(){
     buildSummary = "Job: ${env.JOB_NAME}\n Status: ${status}\n ${description_error} \nBuild Report :${env.BUILD_URL}console"
     slackSend (color : color, message: "${buildSummary}", channel: 'jenkinstestflower')
 }
+
 node {
     
     try{
@@ -46,7 +47,11 @@ node {
 
     }finally{
         echo "Llegó al bloque finally"
-        sendSlackNotifcation()
+        script{
+
+            sendSlackNotifcation()
+
+        }
 
     }
 }
