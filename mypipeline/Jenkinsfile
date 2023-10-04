@@ -1,10 +1,10 @@
 
 node {
-        
+    
+    try{
         stage('Checkout') {
             checkout scm
         }
-
         stage('SonarQube Analysis') {
             //defino una variable para que obtener la ruta de sonarscanner que se installo
             //en global configuration, tool solo es un acronimo que se utiliza para
@@ -23,11 +23,6 @@ node {
         stage("Quality Gate") {
             timeout(time: 1, unit: 'MINUTES') {
                 waitForQualityGate(abortPipeline: true, webhookSecretId: 'web_Hook_Sonar_Secret')
-                
-                // def qg = waitForQualityGate(abortPipeline: true, webhookSecretId: 'web_Hook_Sonar_Secret')
-                // if (qg.status != 'OK') {
-                //     error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                // }
             }
         }
         // stage("Build image docker"){
@@ -38,7 +33,12 @@ node {
         //         }
         //     }
         // }
+    }catch (Exception e) {
+        currentBuild.result = 'FAILURE'
+        throw e
+    }finally{
         sendSlackNotifcation()
+    }
 }
 
 // definimos una funcion la cual notifica mediante slack a los desarrolladores involucrados en el proyecto
