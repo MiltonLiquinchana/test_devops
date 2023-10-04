@@ -49,7 +49,7 @@ node {
         // }
     }catch (Exception e) {
         currentBuild.result = 'FAILURE'
-        // sendSlackNotifcation()
+        sendSlackNotifcation()
     }finally{
         sendSlackNotifcation()
     }
