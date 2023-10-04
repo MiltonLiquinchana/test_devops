@@ -42,7 +42,7 @@ node {
         
     }catch (Exception e) {
 
-        currentBuild.result = 'FAILURE'
+        currentBuild.currentResult = 'FAILURE'
 
     }finally{
         echo "Llegó al bloque finally"
