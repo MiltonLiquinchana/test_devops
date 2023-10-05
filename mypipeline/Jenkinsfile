@@ -5,7 +5,7 @@ def sendSlackNotifcation(){
     def status='*SUCCES*'
 
         if (currentBuild.result=='FAILURE') {
-            description_error="Error description: *${CI_ERROR}*"
+            description_error="Error description: *${env.CI_ERROR}*"
             color='danger'
             status='*FAILURE*'
         }
