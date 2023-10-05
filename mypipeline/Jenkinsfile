@@ -37,7 +37,7 @@ node {
         }
         stage("Quality Gate") {
             timeout(time: 1, unit: 'MINUTES') {
-                waitForQualityGate(abortPipeline: true, webhookSecretId: 'web_Hook_Sonar_Secrets')
+                waitForQualityGate(abortPipeline: true, webhookSecretId: 'web_Hook_Sonar_Secret')
             }
         }
         
@@ -48,7 +48,7 @@ node {
     }finally{
         echo "Llegó al bloque finally"
 
-            sendSlackNotifcation()
+        sendSlackNotifcation()
     }
 }
 
