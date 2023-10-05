@@ -43,7 +43,7 @@ node {
         }
         
     }catch (Exception e) {
-        CI_ERROR = 'Error en el paso '${currentBuild.currentExecutable.displayName}': ${e.message}\n'
+        CI_ERROR = "Error en el paso '${currentBuild.currentExecutable.displayName}': ${e.message}"
         currentBuild.result = 'FAILURE'
 
     }finally{
