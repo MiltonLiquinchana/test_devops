@@ -42,17 +42,13 @@ node {
         }
         
     }catch (Exception e) {
-
+        echo "Llegó al bloque catch"
         currentBuild.result = 'FAILURE'
 
     }finally{
         echo "Llegó al bloque finally"
-        script{
 
             sendSlackNotifcation()
-
-        }
-
     }
 }
 
