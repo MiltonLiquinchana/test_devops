@@ -5,12 +5,12 @@ def sendSlackNotifcation(){
     def status='*SUCCES*'
 
         if (currentBuild.result=='FAILURE') {
-            description_error="Error description: *${env.CI_ERROR}*"
+            description_error="*${env.CI_ERROR}*"
             color='danger'
             status='*FAILURE*'
         }
 
-    buildSummary = "Job: ${env.JOB_NAME}\n Status: ${status}\n ${description_error} \nBuild Report :${env.BUILD_URL}console"
+    buildSummary = "Job: ${env.JOB_NAME}\n Status: ${status}\n Error description: ${description_error} \nBuild Report :${env.BUILD_URL}console"
     slackSend (color : color, message: "${buildSummary}", channel: 'jenkinstestflower')
 }
 
@@ -42,7 +42,7 @@ node {
         }
         
     }catch (Exception e) {
-        echo "Llegó al bloque catch"
+        env.CI_ERROR += "Error en el paso '${currentBuild.currentExecutable.displayName}': ${e.message}\n"
         currentBuild.result = 'FAILURE'
 
     }finally{
