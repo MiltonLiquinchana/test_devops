@@ -47,10 +47,8 @@ node {
 
     }finally{
         echo "Llegó al bloque finally"
-        {
-            sendSlackNotifcation()
 
-        }
+        sendSlackNotifcation()
     }
 }
 
