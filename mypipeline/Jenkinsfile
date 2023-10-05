@@ -4,7 +4,7 @@ def sendSlackNotifcation(){
     def color='good';
     def status='*SUCCES*'
 
-        if (currentBuild.resultIsWorseThan('SUCCESS')) {
+        if (currentBuild.result=='FAILURE') {
             description_error="Error description: *${CI_ERROR}*"
             color='danger'
             status='*FAILURE*'
@@ -47,8 +47,10 @@ node {
 
     }finally{
         echo "Llegó al bloque finally"
+        {
+            sendSlackNotifcation()
 
-        sendSlackNotifcation()
+        }
     }
 }
 
