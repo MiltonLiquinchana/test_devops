@@ -44,11 +44,11 @@ node {
                 waitForQualityGate(abortPipeline: true, webhookSecretId: 'web_Hook_Sonar_Secrets')
             }
         }
+        stageNameError="${STAGE_NAME}"
         
     }catch (Exception e) {
-        // stageNameError="${STAGE_NAME}"
         currentBuild.result = 'FAILURE'
-        CI_ERROR = "Error en el paso ${STAGE_NAME} ${e.message}"
+        CI_ERROR = "Error en el paso ${stageNameError} ${e.message}"
 
 
     }finally{
