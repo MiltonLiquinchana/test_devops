@@ -42,7 +42,7 @@ node {
         stage("Quality Gate") {
             stageNameError="${STAGE_NAME}"
             timeout(time: 1, unit: 'MINUTES') {
-                waitForQualityGate(abortPipeline: true, webhookSecretId: 'web_Hook_Sonar_Secrets')
+                waitForQualityGate(abortPipeline: true, webhookSecretId: 'web_Hook_Sonar_Secret')
             }
         }
         
