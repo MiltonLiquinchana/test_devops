@@ -3,7 +3,7 @@ def sendSlackNotifcation(){
     def description_error=''
     def color='good';
     def status='*SUCCES*'
-    def staneNameError=''
+    def stageNameError=''
     // def CI_ERROR = ''
 
         if (currentBuild.result=='FAILURE') {
@@ -40,7 +40,7 @@ node {
         }
         stage("Quality Gate") {
             timeout(time: 1, unit: 'MINUTES') {
-                waitForQualityGate(abortPipeline: true, webhookSecretId: 'web_Hook_Sonar_Secret')
+                waitForQualityGate(abortPipeline: true, webhookSecretId: 'web_Hook_Sonar_Secrets')
             }
         }
         
