@@ -20,7 +20,7 @@ node {
     
     try{
         stage('Checkout') {
-            stageNameError='Checkout'
+            
             checkout scm
         }
         stage('SonarQube Analysis') {
@@ -43,6 +43,7 @@ node {
                 waitForQualityGate(abortPipeline: true, webhookSecretId: 'web_Hook_Sonar_Secrets')
             }
         }
+        stageNameError='${currentBuild.currentExecutable.displayName}'
         
     }catch (Exception e) {
         CI_ERROR = "Error en el paso ${stageNameError} ${e.message}"
