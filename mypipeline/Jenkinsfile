@@ -39,8 +39,8 @@ node {
             }
         }
         stage("Quality Gate") {
-        stageNameError="${currentBuild.currentExecutable.displayName}"
-        
+        stageNameError="${STAGE_NAME}"
+
             timeout(time: 1, unit: 'MINUTES') {
                 waitForQualityGate(abortPipeline: true, webhookSecretId: 'web_Hook_Sonar_Secrets')
             }
