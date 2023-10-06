@@ -45,15 +45,16 @@ node {
                 waitForQualityGate(abortPipeline: true, webhookSecretId: 'web_Hook_Sonar_Secret')
             }
         }
+        stage("Build Docker Image to Java project"){
+            docker.withRegistry('https://index.docker.io/v1/','DockerHub-access-credentials'){
+            def customImage = docker.build('miltonlq/billingfront:latest', '--no-cache --build-arg angularfiles=dist/billingApp -f Devops/images/frontend/Dockerfile ./')
+            customImage.push()
+        }
         
     }catch (Exception e) {
         currentBuild.result = 'FAILURE'
         CI_ERROR = "Error en el paso ${stageNameError} ${e.message}"
-
-
     }finally{
-        echo "Llegó al bloque finally"
-
         sendSlackNotifcation()
     }
 }
