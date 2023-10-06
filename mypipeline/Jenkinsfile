@@ -46,9 +46,9 @@ node {
         }
         
     }catch (Exception e) {
-        stageNameError="${STAGE_NAME}"
+        // stageNameError="${STAGE_NAME}"
         currentBuild.result = 'FAILURE'
-        CI_ERROR = "Error en el paso ${stageNameError} ${e.message}"
+        CI_ERROR = "Error en el paso ${STAGE_NAME} ${e.message}"
 
 
     }finally{
