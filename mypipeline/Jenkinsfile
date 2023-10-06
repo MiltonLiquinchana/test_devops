@@ -2,7 +2,7 @@
 def sendSlackNotifcation(){
     def description_error=''
     def color='good';
-    def status='*SUCCESS*'
+    def status='*SUCCES*'
     // def stageNameError=''
     // def CI_ERROR = ''
 
