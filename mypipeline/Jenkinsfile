@@ -3,7 +3,7 @@ def sendSlackNotifcation(){
     def description_error=''
     def color='good';
     def status='*SUCCES*'
-    def stageNameError=''
+    // def stageNameError=''
     // def CI_ERROR = ''
 
         if (currentBuild.result=='FAILURE') {
@@ -39,15 +39,15 @@ node {
             }
         }
         stage("Quality Gate") {
-        stageNameError="${STAGE_NAME}"
-
             timeout(time: 1, unit: 'MINUTES') {
                 waitForQualityGate(abortPipeline: true, webhookSecretId: 'web_Hook_Sonar_Secrets')
             }
         }
         
     }catch (Exception e) {
-        CI_ERROR = "Error en el paso ${stageNameError} ${e.message}"
+        // stageNameError="${STAGE_NAME}"
+
+        CI_ERROR = "Error en el paso ${STAGE_NAME} causa: ${e.getCause}"
         currentBuild.result = 'FAILURE'
 
     }finally{
