@@ -3,7 +3,7 @@ def sendSlackNotifcation(){
     def description_error=''
     def color='good';
     def status='*SUCCES*'
-    // def stageNameError=''
+    def stageNameError=''
     // def CI_ERROR = ''
 
         if (currentBuild.result=='FAILURE') {
@@ -45,9 +45,8 @@ node {
         }
         
     }catch (Exception e) {
-        // stageNameError="${STAGE_NAME}"
-
-        CI_ERROR = "Error en el paso ${STAGE_NAME} ${e.message}"
+        stageNameError="${STAGE_NAME}"
+        CI_ERROR = "Error en el paso ${stageNameError} ${e.message}"
         currentBuild.result = 'FAILURE'
 
     }finally{
