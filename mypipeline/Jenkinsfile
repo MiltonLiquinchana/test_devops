@@ -39,13 +39,14 @@ node {
             }
         }
         stage("Quality Gate") {
+        stageNameError="${STAGE_NAME}"
+
             timeout(time: 1, unit: 'MINUTES') {
                 waitForQualityGate(abortPipeline: true, webhookSecretId: 'web_Hook_Sonar_Secrets')
             }
         }
         
     }catch (Exception e) {
-        stageNameError="${STAGE_NAME}"
         CI_ERROR = "Error en el paso ${stageNameError} ${e.message}"
         currentBuild.result = 'FAILURE'
 
