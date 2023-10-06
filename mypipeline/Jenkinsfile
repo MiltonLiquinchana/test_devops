@@ -3,6 +3,7 @@ def sendSlackNotifcation(){
     def description_error=''
     def color='good';
     def status='*SUCCES*'
+    def staneNameError=''
     // def CI_ERROR = ''
 
         if (currentBuild.result=='FAILURE') {
@@ -19,6 +20,7 @@ node {
     
     try{
         stage('Checkout') {
+            stageNameError='Checkout'
             checkout scm
         }
         stage('SonarQube Analysis') {
@@ -43,7 +45,7 @@ node {
         }
         
     }catch (Exception e) {
-        CI_ERROR = "Error en el paso ${e.message}"
+        CI_ERROR = "Error en el paso ${stageNameError} ${e.message}"
         currentBuild.result = 'FAILURE'
 
     }finally{
