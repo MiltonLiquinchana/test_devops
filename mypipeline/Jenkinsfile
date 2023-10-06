@@ -3,7 +3,7 @@ def sendSlackNotifcation(){
     def description_error=''
     def color='good';
     def status='*SUCCES*'
-    // def stageNameError=''
+    def stageNameError=''
     // def CI_ERROR = ''
 
         if (currentBuild.result=='FAILURE') {
@@ -20,10 +20,11 @@ node {
     
     try{
         stage('Checkout') {
-            
+            stageNameError="${STAGE_NAME}"
             checkout scm
         }
         stage('SonarQube Analysis') {
+            stageNameError="${STAGE_NAME}"
             //defino una variable para que obtener la ruta de sonarscanner que se installo
             //en global configuration, tool solo es un acronimo que se utiliza para
             //recuperar la ruta del valor dado(SonarQubeClient)
@@ -39,7 +40,7 @@ node {
             }
         }
         stage("Quality Gate") {
-
+            stageNameError="${STAGE_NAME}"
             timeout(time: 1, unit: 'MINUTES') {
                 waitForQualityGate(abortPipeline: true, webhookSecretId: 'web_Hook_Sonar_Secrets')
             }
@@ -47,7 +48,7 @@ node {
         
     }catch (Exception e) {
         currentBuild.result = 'FAILURE'
-        CI_ERROR = "Error en el paso ${STAGE_NAME} ${e.message}"
+        CI_ERROR = "Error en el paso ${stageNameError} ${e.message}"
 
 
     }finally{
