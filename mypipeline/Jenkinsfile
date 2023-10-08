@@ -42,15 +42,15 @@ node {
         stage("Quality Gate") {
             // stageNameError="${STAGE_NAME}"
             timeout(time: 1, unit: 'MINUTES') {
-                waitForQualityGate(abortPipeline: true, webhookSecretId: 'web_Hook_Sonar_Secret')
+                waitForQualityGate(abortPipeline: true, webhookSecretId: 'web_Hook_Sonar_Secrets')
             }
         }
-        stage("Build Docker Image to Java project"){
-            docker.withRegistry('https://index.docker.io/v1/','DockerHub-access-credentials'){
-            def customImage = docker.build('miltonlq/billingfront:latest', '--no-cache --build-arg angularfiles=dist/billingApp -f Devops/images/frontend/Dockerfile ./')
-            customImage.push()
-            }
-        }
+        // stage("Build Docker Image to Java project"){
+        //     docker.withRegistry('https://index.docker.io/v1/','DockerHub-access-credentials'){
+        //     def customImage = docker.build('miltonlq/billingfront:latest', '--no-cache --build-arg angularfiles=dist/billingApp -f Devops/images/frontend/Dockerfile ./')
+        //     customImage.push()
+        //     }
+        // }
         
     }catch (Exception e) {
         currentBuild.result = 'FAILURE'
