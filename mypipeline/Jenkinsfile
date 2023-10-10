@@ -20,11 +20,11 @@ node {
     
     try{
         stage('Checkout') {
-            // stageNameError="${STAGE_NAME}"
+            stageNameError="${STAGE_NAME}"
             checkout scm
         }
         stage('SonarQube Analysis') {
-            // stageNameError="${STAGE_NAME}"
+            stageNameError="${STAGE_NAME}"
             //defino una variable para que obtener la ruta de sonarscanner que se installo
             //en global configuration, tool solo es un acronimo que se utiliza para
             //recuperar la ruta del valor dado(SonarQubeClient)
@@ -40,21 +40,22 @@ node {
             }
         }
         stage("Quality Gate") {
-            // stageNameError="${STAGE_NAME}"
+            stageNameError="${STAGE_NAME}"
             timeout(time: 1, unit: 'MINUTES') {
-                waitForQualityGate(abortPipeline: true, webhookSecretId: 'web_Hook_Sonar_Secrets')
+                waitForQualityGate(abortPipeline: true, webhookSecretId: 'web_Hook_Sonar_Secret')
             }
         }
-        // stage("Build Docker Image to Java project"){
-        //     docker.withRegistry('https://index.docker.io/v1/','DockerHub-access-credentials'){
-        //     def customImage = docker.build('miltonlq/billingfront:latest', '--no-cache --build-arg angularfiles=dist/billingApp -f Devops/images/frontend/Dockerfile ./')
-        //     customImage.push()
-        //     }
-        // }
+        stage("Build Docker Image to Java project"){
+            stageNameError="${STAGE_NAME}"
+            docker.withRegistry('https://index.docker.io/v1/','DockerHub-access-credentials'){
+            def customImage = docker.build('miltonlq/demo-app-back:latest', '--no-cache -f mypipeline/demo ./')
+            customImage.push()
+            }
+        }
         
     }catch (Exception e) {
         currentBuild.result = 'FAILURE'
-        CI_ERROR = "Error en el paso ${STAGE_NAME} ${e.message}"
+        CI_ERROR = "Error en el paso ${stageNameError} ${e.message}"
     }finally{
         sendSlackNotifcation()
     }
