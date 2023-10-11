@@ -17,7 +17,7 @@ def sendSlackNotifcation(){
 }
 
 node {
-    
+    agent any
     try{
         stage('Checkout') {
             stageNameError="${STAGE_NAME}"
