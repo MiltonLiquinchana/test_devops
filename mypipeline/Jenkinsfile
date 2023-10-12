@@ -35,7 +35,7 @@ node(label: 'principal') {
             //Todos los comandos anteriores funcian, por esta ves usaremos este,
             //ya que no necesita del sonar-project.properties file para funcionar,
             //en el caso de ejecutar el comando anterior a este en ese caso si es necesario
-                sh(script: 'mvn -f demo/pom.xml mvn clean install sonar:sonar')
+                sh(script: 'mvn -f demo/pom.xml clean install sonar:sonar')
             }
         }
         stage("Quality Gate") {
