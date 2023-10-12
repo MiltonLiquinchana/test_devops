@@ -1,4 +1,3 @@
-@Library('DockerPipeline')_
 // definimos una funcion la cual notifica mediante slack a los desarrolladores involucrados en el proyecto
 def sendSlackNotifcation(){
     def description_error=''
