@@ -6,6 +6,6 @@ RUN curl -L https://download.java.net/java/GA/jdk21/fd2272bbf8e04c3dbaee13770090
 ENV JAVA_HOME=/opt/jdk-21
 ENV PATH=\$PATH:\$JAVA_HOME/bin
 ARG demoappfile
-COPY ${demoappfile} demo.jar
+ADD ${demoappfile} demo.jar
 ENTRYPOINT ["java","-jar", "demo.jar" ]
 EXPOSE 8085
