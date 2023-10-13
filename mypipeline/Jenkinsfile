@@ -50,6 +50,7 @@ node(label: 'principal') {
                 // node(label: 'docker_agent'){
                     docker.withRegistry('https://index.docker.io/v1/','docker_hub_access_credentials'){
                         node(label: 'docker_agent'){
+                            sh(script: 'ls')
                             def customImage = docker.build('miltonlq/demoback:latest', '--no-cache --build-arg demoappfile=demo/target/demo.jar -f mypipeline/demoDev/Dockerfile ./')
                             customImage.push()
                         }
