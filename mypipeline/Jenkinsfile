@@ -16,14 +16,6 @@ def sendSlackNotifcation(){
     slackSend (color : color, message: "${buildSummary}", channel: 'devopstestchanel')
 }
 
-//Definimos espacio de trabajo personalizado para solucionar el problema de compartir
-//archivos con otros agentes
-customWorkspace('/ruta/personalizada/para/archivos') {
-    stage('Build and Generate JAR') {
-        sh 'mvn -f demo/pom.xml clean install sonar:sonar'
-    }
-}
-
 node(label: 'principal') {
     try{
         stage('Checkout') {
