@@ -16,6 +16,14 @@ def sendSlackNotifcation(){
     slackSend (color : color, message: "${buildSummary}", channel: 'devopstestchanel')
 }
 
+//Definimos espacio de trabajo personalizado para solucionar el problema de compartir
+//archivos con otros agentes
+customWorkspace('/ruta/personalizada/para/archivos') {
+    stage('Build and Generate JAR') {
+        sh 'mvn -f demo/pom.xml clean install sonar:sonar'
+    }
+}
+
 node(label: 'principal') {
     try{
         stage('Checkout') {
@@ -36,6 +44,7 @@ node(label: 'principal') {
             //ya que no necesita del sonar-project.properties file para funcionar,
             //en el caso de ejecutar el comando anterior a este en ese caso si es necesario
                 sh(script: 'mvn -f demo/pom.xml clean install sonar:sonar')
+                archiveArtifacts artifacts: 'demo/target/*.jar', allowEmptyArchive: true
             }
         }
         stage("Quality Gate") {
@@ -46,14 +55,16 @@ node(label: 'principal') {
         }
         stage("Build Docker Image to Java project"){
             stageNameError="${STAGE_NAME}"
-                sh(script: 'ls demo')
                 node(label: 'docker_agent'){
+                    def buildDir = pwd()
+                    def sourceDir = buildDir + '/archive' // Directorio donde se almacenan los artefactos archivados
+                    copyArtifacts projectName: 'flower_test_project_devops', filter: '**/target/*.jar', target: sourceDir
+
                     docker.withRegistry('https://index.docker.io/v1/','docker_hub_access_credentials'){
-                            sh(script: 'ls demo')
-                            def customImage = docker.build('miltonlq/demoback:latest', '--no-cache --build-arg demoappfile=demo/target/demo.jar -f mypipeline/demoDev/Dockerfile ./')
-                            customImage.push()
-                    
-                }
+                        sh(script: 'ls demo')
+                        def customImage = docker.build('miltonlq/demoback:latest', '--no-cache --build-arg demoappfile=demo/target/demo.jar -f mypipeline/demoDev/Dockerfile ./')
+                        customImage.push()
+                    }
             }
         }
         
