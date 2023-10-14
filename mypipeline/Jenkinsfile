@@ -48,9 +48,13 @@ node(label: 'principal') {
         stage("Build Docker Image to Java project"){
             stageNameError="${STAGE_NAME}"
                 node(label: 'docker_agent'){
-                    def buildDir = pwd()
-                    def sourceDir = buildDir + '/archive' // Directorio donde se almacenan los artefactos archivados
-                    copyArtifacts projectName: 'flower_test_project_devops', filter: '**/target/*.jar', target: sourceDir
+                    // def buildDir = pwd()
+                    // def sourceDir = buildDir + '/archive' // Directorio donde se almacenan los artefactos archivados
+                    // copyArtifacts projectName: 'flower_test_project_devops', filter: '**/target/*.jar', target: sourceDir
+
+                    // Copia los archivos JAR archivados desde el agente 1 al espacio de trabajo del agente 2
+                    step([$class: 'CopyArtifact', projectName: 'flower_test_project_devops', filter: '**/target/*.jar', target: './'])
+
 
                     docker.withRegistry('https://index.docker.io/v1/','docker_hub_access_credentials'){
                         sh(script: 'ls demo')
