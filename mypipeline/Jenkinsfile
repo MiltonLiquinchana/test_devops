@@ -17,6 +17,7 @@ def sendSlackNotifcation(){
 }
 
 node(label: 'principal') {
+    def workspace = null
     try{
         stage('Checkout') {
             stageNameError="${STAGE_NAME}"
@@ -28,6 +29,7 @@ node(label: 'principal') {
             //en global configuration, tool solo es un acronimo que se utiliza para
             //recuperar la ruta del valor dado(SonarQubeClient)
             // def scannerHome = tool 'SonarQubeClient';
+            workspace = pwd()
             withSonarQubeEnv('sonarqubeserver') { // If you have configured more than one global server connection, you can specify its name
                 // sh(script: 'mvn -f demo/pom.xml org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar') 
                 /* sh(script: 'mvn -f demo/pom.xml clean install')
@@ -38,7 +40,6 @@ node(label: 'principal') {
             //necesario
                 sh(script: 'mvn -f demo/pom.xml clean install sonar:sonar')
             }
-            reuseNode true
 
         }
         stage("Quality Gate") {
@@ -50,12 +51,14 @@ node(label: 'principal') {
         stage("Build Docker Image to Java project"){
             stageNameError="${STAGE_NAME}"
                 node(label: 'docker_agent'){
-                    reuseNode true
-                    docker.withRegistry('https://index.docker.io/v1/','docker_hub_access_credentials'){
-                        sh(script: 'ls demo')
-                        def customImage = docker.build('miltonlq/demoback:latest', '--no-cache --build-arg demoappfile=demo/target/demo.jar -f mypipeline/demoDev/Dockerfile ./')
-                        customImage.push()
+                    dir(workspace){
+                        docker.withRegistry('https://index.docker.io/v1/','docker_hub_access_credentials'){
+                            sh(script: 'ls demo')
+                            def customImage = docker.build('miltonlq/demoback:latest', '--no-cache --build-arg demoappfile=demo/target/demo.jar -f mypipeline/demoDev/Dockerfile ./')
+                            customImage.push()
+                        }
                     }
+                    
             }
         }
         
