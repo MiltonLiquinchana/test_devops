@@ -24,6 +24,7 @@ node(label: 'principal') {
         }
         stage('SonarQube Analysis') {
             stageNameError="${STAGE_NAME}"
+            reuseNode true
             //defino una variable para que obtener la ruta de sonarscanner que se installo
             //en global configuration, tool solo es un acronimo que se utiliza para
             //recuperar la ruta del valor dado(SonarQubeClient)
@@ -36,7 +37,6 @@ node(label: 'principal') {
             //ya que no necesita del sonar-project.properties file para funcionar,
             //en el caso de ejecutar el comando anterior a este en ese caso si es
             //necesario
-                reuseNode true
                 sh(script: 'mvn -f demo/pom.xml clean install sonar:sonar')
             }
         }
