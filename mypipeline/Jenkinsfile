@@ -16,8 +16,7 @@ def sendSlackNotifcation(){
     slackSend (color : color, message: "${buildSummary}", channel: 'devopstestchanel')
 }
 
-node(label: 'principal') {
-    def workspace = null
+node {
     try{
         stage('Checkout') {
             stageNameError="${STAGE_NAME}"
