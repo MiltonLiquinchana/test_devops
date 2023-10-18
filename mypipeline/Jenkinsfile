@@ -40,7 +40,7 @@ node(label: 'principal') {
                 // sh(script: 'mvn -f demo/pom.xml clean install sonar:sonar')
                 //Comando para poryectos que usan gradle, en este caso gradlew por que no
                 //necesita instalacion gradle para usar gradle
-                sh(script: './demogradle/gradlew --project-dir=demogradle sonarqube')
+                sh(script: './demogradle/gradlew --project-dir=demogradle sonar:sonar')
 
             }
 
