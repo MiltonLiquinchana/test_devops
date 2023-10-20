@@ -37,9 +37,10 @@ node(label: 'principal') {
             //en el caso de ejecutar el comando anterior a este en ese caso si es
             //necesario
                 // sh(script: 'mvn -f demo/pom.xml clean install sonar:sonar')
+                
                 //Comando para poryectos que usan gradle, en este caso gradlew por que no
                 //necesita instalacion gradle para usar gradle
-                
+            
                 sh(script: './demogradle/gradlew --project-dir=demogradle sonar')
                 
             }
@@ -56,7 +57,12 @@ node(label: 'principal') {
                 node(label: 'docker_agent'){
                     docker.withRegistry('https://index.docker.io/v1/','docker_hub_access_credentials'){
                         sh(script: 'ls demo')
-                        def customImage = docker.build('miltonlq/demoback:latest', '--no-cache --build-arg demoappfile=demo/target/demo.jar -f mypipeline/demoDev/Dockerfile ./')
+                        // def customImage = docker.build('miltonlq/demoback:latest',
+                        // '--no-cache --build-arg demoappfile=demo/target/demo.jar -f
+                        // mypipeline/demoDev/Dockerfile ./')
+                        // El de aca arriva es para un proyecto maven el de aca abajo es
+                        // para un proyecto gradle, ambos son lo mismo ya usan el jar
+                        def customImage = docker.build('miltonlq/demoback:latest', '--no-cache --build-arg demoappfile=demogradle/build/libs/demogradle-0.0.1-SNAPSHOT.jar -f mypipeline/demoDev/Dockerfile ./')
                         customImage.push()
                     }
             }
