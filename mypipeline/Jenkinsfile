@@ -30,8 +30,8 @@ node(label: 'principal') {
             def scannerHome = tool 'SonarQubeClient';
             withSonarQubeEnv('sonarqubeserver') { // If you have configured more than one global server connection, you can specify its name
                 // sh(script: 'mvn -f demo/pom.xml org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar') 
-                sh(script: 'mvn -f demo/pom.xml clean install')
-                sh "${scannerHome}/bin/sonar-scanner"
+                /** sh(script: 'mvn -f demo/pom.xml clean install')
+                sh "${scannerHome}/bin/sonar-scanner"**/
             //Todos los comandos anteriores funcian, por esta ves usaremos este,
             //ya que no necesita del sonar-project.properties file para funcionar,
             //en el caso de ejecutar el comando anterior a este en ese caso si es
@@ -40,8 +40,8 @@ node(label: 'principal') {
                 //Comando para poryectos que usan gradle, en este caso gradlew por que no
                 //necesita instalacion gradle para usar gradle
                 
-                // sh(script: './demogradle/gradlew --project-dir=demogradle sonar:sonar')
-
+                sh(script: './demogradle/gradlew --project-dir=demogradle sonar')
+                
             }
 
         }
