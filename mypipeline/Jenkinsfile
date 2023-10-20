@@ -41,7 +41,7 @@ node(label: 'principal') {
                 //Comando para poryectos que usan gradle, en este caso gradlew por que no
                 //necesita instalacion gradle para usar gradle
             
-                sh(script: './demogradle/gradlew --project-dir=demogradle sonar')
+                sh(script: './demogradle/gradlew --project-dir=demogradle build sonar')
                 
             }
 
